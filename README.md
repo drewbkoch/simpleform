@@ -1,4 +1,4 @@
-prototype
+simpleform
 =========
 
-Base template combining html5 boilerplate and skeleton grid system
+Simple sign up for with interactive styling and validation (work in progress)
