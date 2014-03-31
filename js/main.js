@@ -1,78 +1,114 @@
-//check if button has class validated on every blur
-function buttonCheck() {
-  if ( $('#first-name').hasClass("validated") && $('#last-name').hasClass("validated") && $('#email').hasClass("validated") && $('#email-again').hasClass("validated") && $('#password').hasClass("validated") && $('#password-again').hasClass("validated") ) {
-    $("#submit").removeAttr("disabled");
-  }
-}
+// //check if button has class validated on every blur
+// function buttonCheck() {
+//   if ( $('#first-name').hasClass("validated") && $('#last-name').hasClass("validated") && $('#email').hasClass("validated") && $('#email-again').hasClass("validated") && $('#password').hasClass("validated") && $('#password-again').hasClass("validated") ) {
+//     $("#submit").removeAttr("disabled");
+//   }
+// }
 
+//things applied to form field when it's validated
+function validated(id) {
+  $(id).css('border-bottom', '3px solid lightgreen');
+  $(id).addClass("validated");
+};
+
+//things applied to form field when it throws an error
+function error(id) {
+  $(id).css('border-bottom', '3px solid tomato');
+  $(id).addClass("shake");
+  $(id).removeClass("validated");
+};
+
+//function to check if field is blank or not. Takes paramter of id to check and char_length to check if input is more than or equal to the length inputed
 function notBlank (id, char_length) {
-  $(id).on('blur', function() {
-    var value = $(this).val();
-
+    var value = $(id).val();
     if (value.length >= char_length) {
-      $(this).css('border-bottom', '3px solid lightgreen');
-      $(this).removeClass("shake");
-      $(this).addClass("validated");
+      return "not blank";
     } else {
-      $(this).css('border-bottom', '3px solid tomato');
-      $(this).addClass("shake");
-      $(this).removeClass("validated");
+      return "blank";
     };
+};
 
-    buttonCheck();
-
-  });
-}
-
-
-notBlank('#first-name', 2);
-notBlank('#last-name', 2);
-notBlank('#password', 6);
-notBlank('#password-again', 6);
-
-
-function validateEmail(id) {
+function nameField(id) {
   $(id).on('blur', function() {
-    var value = $(this).val();
-    var atpos=value.indexOf("@");
-    var dotpos=value.lastIndexOf(".");
-    if (atpos<1 || dotpos<atpos+2 || dotpos+2>=value.length)
-      {
-        $(this).css('border-bottom', '3px solid tomato');
-        $(this).addClass("shake");
-        $(this).removeClass("validated");
-      } else {
-        $(this).css('border-bottom', '3px solid lightgreen');
-        $(this).addClass("validated");
-      }
-    });
-  buttonCheck();
-}
-
-
-validateEmail('#email');
-validateEmail('#email-again');
-
-
-function compare(id1, id2) {
-  $(id2).on('blur', function(){
-    var pw = $(id1).val();
-    var pw2 = $(id2).val();
-    if ( pw != pw2 ) {
-      $(id1).css('border-bottom', '3px solid tomato');
-      $(id1).removeClass("validated");
-      $(id2).css('border-bottom', '3px solid tomato');
-      $(id2).removeClass("validated");
-    } else if ( pw === pw2 ) {
-      $(id1).css('border-bottom', '3px solid lightgreen');
-      $(id1).addClass("validated");
-      $(id2).css('border-bottom', '3px solid lightgreen');
-      $(id2).addClass("validated");
+    if ( notBlank(id, 2) === "not blank" ) {
+      validated(id);
+    } else {
+      error(id);
     };
-    buttonCheck();
+  }); //function to check if name fields contain at least 2 characters in length
+};
+
+nameField("#first-name"); //call nameField function on name field
+nameField("#last-name"); //call nameField function on name field
+
+//email validation code. takes parameter id.
+function validateEmail(id) {
+  var value = $(id).val();
+  var atpos=value.indexOf("@");
+  var dotpos=value.lastIndexOf(".");
+  if (atpos<1 || dotpos<atpos+2 || dotpos+2>=value.length)
+    {
+      return "not validated";
+    } else {
+      return "validated";
+    };
+};
+
+//compare two fields. takes two params, id1 and id2 to compare.
+function compare(id, id2) {
+  var pw = $(id).val();
+  var pw2 = $(id2).val();
+  if ( pw != pw2 ) {
+    return "no match";
+  } else if ( pw === pw2 ) {
+    return "match";
+  };
+};
+
+function emailField(id, id2) { //check if email passes validation and compare both fields
+  $(id).on('blur', function() {
+    if ( validateEmail(id) === "validated" && compare(id, id2) === "match" ) {
+      validated(id);
+      validated(id2);
+    } else if ( validateEmail(id) === "validated" ) {
+      validated(id);
+    } else {
+      error(id);
+    };
   });
-}
+  $(id2).on('blur', function() {
+    if ( validateEmail(id2) === "validated" && compare(id, id2) === "match" ) {
+      validated(id);
+      validated(id2);
+    } else {
+      error(id);
+      error(id2);
+    };
+  });
+};
 
-compare('#email', '#email-again');
-compare('#password', '#password-again');
+emailField("#email", "#email-again"); //call emailField function on email fields
 
+function passwordField(id, id2) { //check if password long enough and compare both fields
+  $(id).on('blur', function() {
+    if ( notBlank(id, 6) === "not blank" && compare(id, id2) === "match" ) {
+      validated(id);
+      validated(id2);
+    } else if ( notBlank(id, 6) === "not blank" ) {
+      validated(id);
+    } else {
+      error(id);
+    };
+  });
+  $(id2).on('blur', function() {
+    if ( notBlank(id, 6) === "not blank" && compare(id, id2) === "match" ) {
+      validated(id);
+      validated(id2);
+    } else {
+      error(id);
+      error(id2);
+    };
+  });
+};
+
+passwordField("#password", "#password-again"); //call passwordField function on password fields
