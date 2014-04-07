@@ -1,9 +1,15 @@
-// //check if button has class validated on every blur
-// function buttonCheck() {
-//   if ( $('#first-name').hasClass("validated") && $('#last-name').hasClass("validated") && $('#email').hasClass("validated") && $('#email-again').hasClass("validated") && $('#password').hasClass("validated") && $('#password-again').hasClass("validated") ) {
-//     $("#submit").removeAttr("disabled");
-//   }
-// }
+//check if button has class validated on every blur
+function buttonCheck() {
+  if ( $('#first-name').hasClass("validated") && $('#last-name').hasClass("validated") && $('#email').hasClass("validated") && $('#email-again').hasClass("validated") && $('#password').hasClass("validated") && $('#password-again').hasClass("validated") ) {
+    $("#submit").removeAttr("disabled");
+  } else {
+    $("#submit").attr("disabled");
+  }
+};
+
+// $('input').keyup(function (){ //check if all inputs are validated on every keyup
+//   buttonCheck();
+// });
 
 //things applied to form field when it's validated
 function validated(id) {
@@ -28,14 +34,15 @@ function notBlank (id, char_length) {
     };
 };
 
-function nameField(id) {
+function nameField(id) { //function to check if name fields contain at least 3 characters in length
   $(id).on('blur', function() {
-    if ( notBlank(id, 2) === "not blank" ) {
+    if ( notBlank(id, 3) === "not blank" ) {
       validated(id);
     } else {
       error(id);
     };
-  }); //function to check if name fields contain at least 2 characters in length
+    buttonCheck();
+  });
 };
 
 nameField("#first-name"); //call nameField function on name field
@@ -91,17 +98,17 @@ emailField("#email", "#email-again"); //call emailField function on email fields
 
 function passwordField(id, id2) { //check if password long enough and compare both fields
   $(id).on('blur', function() {
-    if ( notBlank(id, 6) === "not blank" && compare(id, id2) === "match" ) {
+    if ( notBlank(id, 7) === "not blank" && compare(id, id2) === "match" ) {
       validated(id);
       validated(id2);
-    } else if ( notBlank(id, 6) === "not blank" ) {
+    } else if ( notBlank(id, 7) === "not blank" ) {
       validated(id);
     } else {
       error(id);
     };
   });
   $(id2).on('blur', function() {
-    if ( notBlank(id, 6) === "not blank" && compare(id, id2) === "match" ) {
+    if ( notBlank(id, 7) === "not blank" && compare(id, id2) === "match" ) {
       validated(id);
       validated(id2);
     } else {

@@ -24,12 +24,12 @@
           <ul>
             <li>
               <label for="first-name">First Name:</label>
-              <input id="first-name" type="text" required autofocus>
+              <input id="first-name" type="text" pattern=".{3,18}" title="Must be at least 3 characters" required  autofocus>
             </li>
 
             <li>
               <label for="last-name">Last Name:</label>
-              <input id="last-name" type="text" required>
+              <input id="last-name" type="text" pattern=".{3,18}" title="Must be at least 3 characters" required>
             </li>
 
             <li>
@@ -52,7 +52,7 @@
               <input id="password-again" type="password" pattern=".{6,18}" title="Must be between 6 and 18 characters" required>
             </li>
             <li>
-              <button id="submit" type="submit" class="full-width">Create Account</button>
+              <button id="submit" type="submit" class="full-width" disabled>Create Account</button>
             </li>
           </ul>
         </fieldset>
