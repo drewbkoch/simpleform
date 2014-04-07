@@ -1,20 +1,34 @@
+var delay = (function(){ //define delay variable to apply not immediately after keyup
+  var timer = 0;
+  return function(callback, ms){
+    clearTimeout (timer);
+    timer = setTimeout(callback, ms);
+  };
+})();
+
 //check if button has class validated on every blur
 function buttonCheck() {
   if ( $('#first-name').hasClass("validated") && $('#last-name').hasClass("validated") && $('#email').hasClass("validated") && $('#email-again').hasClass("validated") && $('#password').hasClass("validated") && $('#password-again').hasClass("validated") ) {
+    console.log("all fields validated");
     $("#submit").removeAttr("disabled");
   } else {
-    $("#submit").attr("disabled");
+    $("#submit").attr("disabled", "true");
+    console.log("nope");
   }
 };
 
-// $('input').keyup(function (){ //check if all inputs are validated on every keyup
-//   buttonCheck();
-// });
+$('input').keyup(function (){ //check if all inputs are validated on every keyup
+  delay(function(){
+    buttonCheck();
+    console.log("yo")
+  }, 1000);
+});
 
 //things applied to form field when it's validated
 function validated(id) {
   $(id).css('border-bottom', '3px solid lightgreen');
   $(id).addClass("validated");
+  console.log("field validated");
 };
 
 //things applied to form field when it throws an error
@@ -22,6 +36,7 @@ function error(id) {
   $(id).css('border-bottom', '3px solid tomato');
   $(id).addClass("shake");
   $(id).removeClass("validated");
+  console.log("field unvalidated");
 };
 
 //function to check if field is blank or not. Takes paramter of id to check and char_length to check if input is more than or equal to the length inputed
@@ -35,13 +50,14 @@ function notBlank (id, char_length) {
 };
 
 function nameField(id) { //function to check if name fields contain at least 3 characters in length
-  $(id).on('blur', function() {
-    if ( notBlank(id, 3) === "not blank" ) {
-      validated(id);
-    } else {
-      error(id);
-    };
-    buttonCheck();
+  $(id).keyup(function (){
+    delay(function(){
+      if ( notBlank(id, 3) === "not blank" ) {
+        validated(id);
+      } else {
+        error(id);
+      };
+    }, 1000);
   });
 };
 
@@ -73,48 +89,57 @@ function compare(id, id2) {
 };
 
 function emailField(id, id2) { //check if email passes validation and compare both fields
-  $(id).on('blur', function() {
-    if ( validateEmail(id) === "validated" && compare(id, id2) === "match" ) {
-      validated(id);
-      validated(id2);
-    } else if ( validateEmail(id) === "validated" ) {
-      validated(id);
-    } else {
-      error(id);
-    };
+  $(id).keyup(function(){
+    delay(function(){
+      if ( validateEmail(id) === "validated" && compare(id, id2) === "match" ) {
+        validated(id);
+        validated(id2);
+      } else if ( validateEmail(id) === "validated" ) {
+        validated(id);
+      } else {
+        error(id);
+      };
+    }, 1000);
   });
-  $(id2).on('blur', function() {
-    if ( validateEmail(id2) === "validated" && compare(id, id2) === "match" ) {
-      validated(id);
-      validated(id2);
-    } else {
-      error(id);
-      error(id2);
-    };
+  $(id2).keyup(function(){
+    delay(function(){
+      if ( validateEmail(id2) === "validated" && compare(id, id2) === "match" ) {
+        validated(id);
+        validated(id2);
+      } else {
+        error(id);
+        error(id2);
+      };
+    }, 1000);
   });
 };
 
 emailField("#email", "#email-again"); //call emailField function on email fields
 
 function passwordField(id, id2) { //check if password long enough and compare both fields
-  $(id).on('blur', function() {
-    if ( notBlank(id, 7) === "not blank" && compare(id, id2) === "match" ) {
-      validated(id);
-      validated(id2);
-    } else if ( notBlank(id, 7) === "not blank" ) {
-      validated(id);
-    } else {
-      error(id);
-    };
+  $(id).keyup(function(){
+
+   delay(function() {
+      if ( notBlank(id, 7) === "not blank" && compare(id, id2) === "match" ) {
+        validated(id);
+        validated(id2);
+      } else if ( notBlank(id, 7) === "not blank" ) {
+        validated(id);
+      } else {
+        error(id);
+      };
+    }, 1000);
   });
-  $(id2).on('blur', function() {
-    if ( notBlank(id, 7) === "not blank" && compare(id, id2) === "match" ) {
-      validated(id);
-      validated(id2);
-    } else {
-      error(id);
-      error(id2);
-    };
+  $(id2).keyup(function(){
+    delay(function() {
+      if ( notBlank(id, 7) === "not blank" && compare(id, id2) === "match" ) {
+        validated(id);
+        validated(id2);
+      } else {
+        error(id);
+        error(id2);
+      };
+    }, 1000);
   });
 };
 
